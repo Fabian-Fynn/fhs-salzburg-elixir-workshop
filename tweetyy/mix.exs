@@ -43,6 +43,7 @@ defmodule Tweetyy.Mixfile do
       {:cowboy, "~> 1.0"},
       {:oauther, "~> 1.1"},
       {:extwitter, "~> 0.8"},
+      {:veritaserum, "~> 0.2.0"},
     ]
   end
 

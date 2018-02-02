@@ -17,14 +17,27 @@ defmodule Tweetyy.Tweeting.Worker do
   def start_stream(term) do
     ExTwitter.stream_filter(track: term)
     |> Stream.map(fn tweet -> tweet.text end)
-    |> Enum.each(&broadcast_tweet/1)
+    |> Stream.reject(fn text -> String.match?(text, ~r/RT/) end)
+    |> Stream.filter(fn text -> String.length(text) > 25 end)
+    |> Enum.each(&analyse_tweet/1)
   end
 
   def print_tweet(tweet) do
     IO.puts(">>> #{tweet}")
   end
 
-  def broadcast_tweet(tweet) do
-    TweetyyWeb.Endpoint.broadcast("tweet_stream:trump", "tweet:new", %{body: tweet})
+  def analyse_tweet(tweet) do
+    mood = Veritaserum.analyze(tweet)
+    value = cond do
+      mood > 0 -> String.duplicate("👍", abs(mood))
+      mood < 0 -> String.duplicate("👎", abs(mood))
+      true -> "😐"
+    end
+
+    broadcast_tweet(value, tweet)
+  end
+
+  def broadcast_tweet(mood, tweet) do
+    TweetyyWeb.Endpoint.broadcast("tweet_stream:trump", "tweet:new", %{text: tweet, mood: mood})
   end
 end

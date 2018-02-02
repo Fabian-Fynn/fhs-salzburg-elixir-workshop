@@ -57,9 +57,4 @@ config :tweetyy, Tweetyy.Repo,
   hostname: "localhost",
   pool_size: 10
 
-config :extwitter, :oauth, [
-  consumer_key: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXx",
-  consumer_secret: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  access_token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  access_token_secret: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-]
+import_config "dev.secret.exs"

@@ -22,19 +22,30 @@ import socket from "./socket"
 
 const template = (tweet) => {
   return `
-    <li>
-      <p>${tweet.body}</p>
-    </li>
+  <hr>
+  <p> <span>${tweet.mood}</span></p>
+      <p>${tweet.text}</p>
   `
 }
 
+const printTweet = (el, tweet) => {
+  if (el.childNodes.length > 10) {
+    el.removeChild(el.firstChild);
+  }
+  let listItem = document.createElement('li');
+  listItem.style.listStyleType = 'none';
+  listItem.innerHTML = template(tweet);
+  el.appendChild(listItem);
+}
+
 window.startTermStream = (term, el) => {
+  let tweets = [];
   let channel = socket.channel(`tweet_stream:${term}`, {})
   channel.join()
     .receive("ok", resp => { console.log("Joined successfully", resp) })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
   channel.on("tweet:new", (tweet) => {
-    el.innerHTML = template(tweet) + el.innerHTML
+    printTweet(el, tweet, tweets);
   })
 }
